@@ -21,20 +21,25 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m pip install --user pytest flask requests'
+                sh '''
+                    python3 -m venv .venv
+                    .venv/bin/pip install pytest flask requests
+                '''
             }
         }
 
         stage('Start API') {
             steps {
-                sh 'python3 stand_up_triangle_api.py > api.log 2>&1 &'
-                sh 'sleep 3'
+                sh '''
+                    .venv/bin/python stand_up_triangle_api.py > api.log 2>&1 &
+                    sleep 3
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest'
+                sh '.venv/bin/pytest'
             }
         }
     }
